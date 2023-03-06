@@ -4,7 +4,10 @@
 #include "pico/stdlib.h"
 
 #include "Game.h"
-#include "DisplaySSD1306.h"
+#include "Display.h"
+
+//! SSD1306 Driver
+#include "DisplayDriverSSD1306.h"
 
 #ifdef RASPBERRYPI_PICO_W
 #include "pico/cyw43_arch.h"
@@ -32,7 +35,9 @@ int main()
 #endif
 
 	Game game(10,22);
-	DisplaySSD1306 disp;
+
+	DisplayDriverSSD1306 disp_driver;
+	Display disp(&disp_driver);
 
 	absolute_time_t  nextStep = delayed_by_us(get_absolute_time(),PERIOD_US);
 
