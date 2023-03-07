@@ -10,10 +10,10 @@ First version is using a SSD106 Oled display connected to pins 24&25 (I2C1)
 
 Control is done with serial over USB using a terminal (like minicom for linux).
 Controls:
-    'q'  : left
-    's'  : down
-    'd'  : right
-    space: rotate
+    | 'q'   | left   |
+    | 's'   | down   |
+    | 'd'   | right  |
+    | space | rotate |
 
 ![System running](images/PiCoTetris1.jpg) ![System running](images/PiCoTetris2.jpg)
 
