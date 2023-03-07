@@ -1,9 +1,23 @@
 #include "Display.h"
 #include "DisplayDriver.h"
 
-Display::Display(DisplayDriver *driver) : p_driver(driver)
+Display::Display(DisplayDriver *driver, Orientation orient) : p_driver(driver)
 {
     p_driver->init();
+
+    int width = p_driver->getWidth();
+    int height = p_driver->getHeight();
+
+    //! Invert
+    if (orient == PORTRAIT)
+    {
+        width = p_driver->getHeight();
+        height = p_driver->getWidth();
+    }
+
+    m_blockSize = 4;
+    m_borderSize = 1;
+    m_offsetBorder = 7;
 }
 
 void Display::drawBlock(uint8_t c, uint8_t l)

@@ -37,7 +37,7 @@ int main()
 	Game game(10,22);
 
 	DisplayDriverSSD1306 disp_driver;
-	Display disp(&disp_driver);
+	Display disp(&disp_driver, Display::PORTRAIT);
 
 	absolute_time_t  nextStep = delayed_by_us(get_absolute_time(),PERIOD_US);
 
