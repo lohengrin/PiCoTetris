@@ -18,24 +18,36 @@ Game::Game(int width, int height)
 void Game::setCommand(Controller::Command cmd)
 {
     Piece::Position pos = m_currentPiece.getPos();
+
     switch(cmd)
     {
         case Controller::LEFT:
         {
             if (!(checkCollision() & DirLeft))
+            {
                 pos.x -= 1;
+                m_currentPiece.setPos(pos);
+            }
         }
         break;
         case Controller::RIGHT:
         {
             if (!(checkCollision() & DirRight))
+            {
                 pos.x += 1;
+                m_currentPiece.setPos(pos);
+            }
         }
         break;
         case Controller::DOWN:
         {
             if (!(checkCollision() & DirBottom))
+            {
                 pos.y -= 1;
+                m_currentPiece.setPos(pos);
+            }
+            else
+                nextPiece();
         }
         break;
         case Controller::ROTATE:
@@ -44,18 +56,16 @@ void Game::setCommand(Controller::Command cmd)
         }
         break;
     };
-
-    m_currentPiece.setPos(pos);
 }
 
 //-----------------------------------------------------------------------
 void Game::step()
 {
     static uint64_t count = 1;
+    const int speed = 100;
     
-    if (count++ % 100 == 0)
+    if (count++ % speed == 0)
     {
-
         if (checkCollision() & DirBottom)
         {
             nextPiece();

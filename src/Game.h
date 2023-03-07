@@ -23,26 +23,36 @@ public:
     Game(int width = 10, int height = 22);
     ~Game() {}
 
+    //! Set controller command
     void setCommand(Controller::Command cmd);
 
+    //! Step the game
     void step();
 
+    //! Restart
     void reset();
 
+    //! Accessor for Display
     const Board& getBoard() const { return m_board; }
     const Piece& getPiece() const { return m_currentPiece; }
 
 private:
+    //! Collision Directions
     const uint8_t DirNone   = 0x00;
     const uint8_t DirBottom = 0x01;
     const uint8_t DirLeft   = 0x02;
     const uint8_t DirRight  = 0x04;
 
-    // Return true if piece land on another block or bottom
+    //! Return if piece collide in one or more directions
     uint8_t checkCollision();
+
+    //! Check if a line is completed
     uint16_t checkLines();
+
+    //! Switch to next Piece
     void nextPiece();
 
+    //! The game board
     Board m_board;
 
     Piece m_currentPiece;
