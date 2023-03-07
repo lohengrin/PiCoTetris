@@ -89,8 +89,12 @@ void Game::reset()
         for (auto&& l : c)
             l.type = Block::NONE;
 
+    m_currentPiece = Piece();
     m_currentPiece.setPos(m_InitPos);
+    m_nextPiece = Piece();
     m_nextPiece.setPos(m_InitPos);
+
+    m_score = 0;
 }
 
 //-----------------------------------------------------------------------
@@ -174,10 +178,11 @@ uint16_t Game::checkLines()
 
     uint16_t score = 0;
     std::sort(to_remove.begin(), to_remove.end(), std::less<int>());
+    int lineoffset = 0;
     for (auto i: to_remove)
     {
         printf("Full Line: %d \n", i);
-        for (size_t l2 = i; l2 < m_board.size()-1; l2++)
+        for (size_t l2 = i-lineoffset; l2 < m_board.size()-1; l2++)
             for (size_t c = 0; c < m_board[l2].size(); c++)
                 m_board[l2][c] = m_board[l2+1][c];
 
@@ -185,6 +190,7 @@ uint16_t Game::checkLines()
         for (size_t c = 0; c < m_board[lastLine].size(); c++)
             m_board[lastLine][c].type = Game::Block::NONE;
 
+        lineoffset++;
         score += 10;
     }
 

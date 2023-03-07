@@ -40,6 +40,11 @@ void DisplayDriverSSD1306::drawLine(int x1, int y1, int x2, int y2)
     m_display.draw_line(x1, y1, x2, y2);
 }
 
+void DisplayDriverSSD1306::drawPixel(int x, int y)
+{
+    m_display.draw_pixel(x, y);
+}
+
 void DisplayDriverSSD1306::setup_gpios()
 {
     printf("configuring pins...\n");

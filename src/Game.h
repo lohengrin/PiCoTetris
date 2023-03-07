@@ -55,8 +55,11 @@ private:
     //! The game board
     Board m_board;
 
+    //! Current and next piece
     Piece m_currentPiece;
     Piece m_nextPiece;
-    const Piece::Position m_InitPos = {3,20};
+    const Piece::Position m_InitPos = {3,19};
 
+    //! Score
+    uint32_t m_score = 0;
 };
