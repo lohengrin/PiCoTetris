@@ -26,6 +26,9 @@ src/Display.h
 src/DisplayDriver.h
 src/DisplayDriverSSD1306.cpp
 src/DisplayDriverSSD1306.h
+src/Controller.h
+src/ControllerStdin.h
+src/ControllerStdin.cpp
 src/Piece.cpp
 src/Piece.h
 src/ssd1306.cpp

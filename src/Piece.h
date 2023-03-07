@@ -21,6 +21,8 @@ public:
     const Position& getPos() const { return m_pos; }
     void setPos(const Position& pos ) { m_pos = pos; }
 
+    void rotate();
+
     const Blocks& getBlocks() const { return m_blocks; }
 
 protected:

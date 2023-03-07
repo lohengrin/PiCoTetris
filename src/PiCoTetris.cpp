@@ -5,6 +5,10 @@
 
 #include "Game.h"
 #include "Display.h"
+#include "Controller.h"
+
+//! STDIN Controller
+#include "ControllerStdin.h"
 
 //! SSD1306 Driver
 #include "DisplayDriverSSD1306.h"
@@ -36,8 +40,9 @@ int main()
 
 	Game game(10,22);
 
-	DisplayDriverSSD1306 disp_driver;
-	Display disp(&disp_driver, Display::PORTRAIT);
+	std::unique_ptr<Controller> controller(new ControllerStdin);
+	std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverSSD1306);
+	Display disp(disp_driver.get(), Display::PORTRAIT);
 
 	absolute_time_t  nextStep = delayed_by_us(get_absolute_time(),PERIOD_US);
 
@@ -47,7 +52,9 @@ int main()
 	while (true)
 	{
 		// Get joystick event
+		Controller::Command cmd = controller->step();
 
+		game.setCommand(cmd);
 
 		// Step Game
 		game.step();
