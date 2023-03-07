@@ -28,8 +28,6 @@ Piece::Piece()
     uint32_t rand = rnd();
     uint32_t type = rand % 7;
 
-    printf("New Piece: %d %d\n", rand, type);
-
     switch (type) {
         case 0: // Square
             m_blocks[1][1] = 1;
