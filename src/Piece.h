@@ -7,26 +7,21 @@
 class Piece {
 public:
     struct Position {
-        int8_t x;
-        int8_t y;   
+        int8_t x=0;
+        int8_t y=0;   
     };
 
-    typedef std::vector<uint8_t> Line;
-    typedef std::vector<Line> Blocks;
-
-
-    Piece();
-    virtual ~Piece() {}
+    Piece(const Position& pos);
 
     const Position& getPos() const { return m_pos; }
     void setPos(const Position& pos ) { m_pos = pos; }
 
     void rotate();
 
-    const Blocks& getBlocks() const { return m_blocks; }
+    bool getBlock(int x, int y) const { return m_blocks[x][y]; }
 
 protected:
-    Blocks m_blocks;
+    bool m_blocks[4][4];
 
     Position m_pos;
 };

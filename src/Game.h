@@ -17,11 +17,8 @@ public:
         TYPE type;
     };
 
-    typedef std::vector<Block> Line;
-    typedef std::vector<Line> Board;
-
     Game(int width = 10, int height = 22);
-    ~Game() {}
+    ~Game();
 
     //! Set controller command
     void setCommand(Controller::Command cmd);
@@ -32,8 +29,13 @@ public:
     //! Restart
     void reset();
 
-    //! Accessor for Display
-    const Board& getBoard() const { return m_board; }
+    //! Board accessors
+    Block::TYPE& board(int x, int y) { return m_board[x*m_width+y].type; }
+    const Block::TYPE& board(int x, int y) const { return m_board[x*m_width+y].type; }
+    int width() const { return m_width; }
+    int height() const { return m_height; }
+
+    //! get current piece
     const Piece& getPiece() const { return m_currentPiece; }
 
 private:
@@ -53,7 +55,9 @@ private:
     void nextPiece();
 
     //! The game board
-    Board m_board;
+    Block *m_board;
+    const int m_width;
+    const int m_height;
 
     //! Current and next piece
     Piece m_currentPiece;

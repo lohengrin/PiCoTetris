@@ -19,7 +19,6 @@ public:
     //! Drawing commands
     void clear() override;
     void update() override;
-
     void drawLine(int x1, int y1, int x2, int y2) override;
     void drawPixel(int x, int y) override;
 

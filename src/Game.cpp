@@ -5,13 +5,20 @@
 #include <functional>
 
 //-----------------------------------------------------------------------
-Game::Game(int width, int height)
+Game::Game(int width, int height) :
+m_board(new Block[width*height]),
+m_width(width),
+m_height(height),
+m_currentPiece(m_InitPos),
+m_nextPiece(m_InitPos)
 {
-   m_board.resize(height);
-    for (auto&& l : m_board)
-        l.resize(width);
-
     reset();
+}
+
+//-----------------------------------------------------------------------
+Game::~Game()
+{
+    delete[] m_board;
 }
 
 //-----------------------------------------------------------------------
@@ -85,14 +92,10 @@ void Game::step()
 //-----------------------------------------------------------------------
 void Game::reset()
 {
-    for ( auto&& c : m_board)
-        for (auto&& l : c)
-            l.type = Block::NONE;
+    memset(m_board,0,m_width*m_height*sizeof(Block));
 
-    m_currentPiece = Piece();
-    m_currentPiece.setPos(m_InitPos);
-    m_nextPiece = Piece();
-    m_nextPiece.setPos(m_InitPos);
+    m_currentPiece = Piece(m_InitPos);
+    m_nextPiece = Piece(m_InitPos);
 
     m_score = 0;
 }
@@ -100,27 +103,25 @@ void Game::reset()
 //-----------------------------------------------------------------------
 uint8_t Game::checkCollision()
 {
-    auto && blocks = m_currentPiece.getBlocks();
     auto && pos = m_currentPiece.getPos();
 
     uint8_t ret = DirNone;
 
     // Scan current piece to compute collision with border and board
-    for (int l = 0; l < blocks.size(); l++)
+    for (int l = 0; l < 4; l++)
     {
-        auto &&line = blocks[l];
-        for (int c = 0; c < line.size(); c++)
+        for (int c = 0; c < 4; c++)
         {
-            if (line[c] != 0)
+            if (m_currentPiece.getBlock(l,c))
             {
                 int x = pos.x+c;
                 int y = pos.y+l;
 
-                if ((x == 0) || (m_board[y][x-1].type == Block::FILL)) 
+                if ((x == 0) || (board(y,x-1) == Block::FILL)) 
                     ret = ret | DirLeft;
-                if ((x == m_board[y].size()-1) || (m_board[y][x+1].type == Block::FILL)) 
+                if ((x == m_width-1) || (board(y,x+1) == Block::FILL)) 
                     ret = ret | DirRight;
-                if ((y == 0) || (m_board[y-1][x].type == Block::FILL))
+                if ((y == 0) || (board(y-1,x) == Block::FILL))
                     ret = ret | DirBottom;
             }
         }
@@ -132,27 +133,23 @@ uint8_t Game::checkCollision()
 //-----------------------------------------------------------------------
 void Game::nextPiece()
 {
-    auto && blocks = m_currentPiece.getBlocks();
     auto && pos = m_currentPiece.getPos();
 
-    for (size_t l = 0; l < blocks.size(); l++)
+    for (int l = 0; l < 4; l++)
     {
-        auto &&line = blocks[l];
-        for (size_t c = 0; c < line.size(); c++)
+        for (int c = 0; c < 4; c++)
         {
-            if (line[c] != 0)
+            if (m_currentPiece.getBlock(l,c))
             {
                 auto x = pos.x+c;
                 auto y = pos.y+l;
-
-                m_board[y][x].type = Block::FILL;
+                board(y,x) = Block::FILL;
             }
         }
     }
 
     m_currentPiece = m_nextPiece;
-    m_nextPiece = Piece();
-    m_nextPiece.setPos(m_InitPos);
+    m_nextPiece = Piece(m_InitPos);
 }
 
 //-----------------------------------------------------------------------
@@ -160,35 +157,35 @@ uint16_t Game::checkLines()
 {
     std::vector<int> to_remove;
 
-    for (int l = 0; l < m_board.size(); l++)
+    // Search full lines accross board
+    for (int l = 0; l < m_height; l++)
     {
-        auto &&line = m_board[l];
         int count = 0;
-        for (size_t c = 0; c < line.size(); c++)
+        for (size_t c = 0; c < m_width; c++)
         {
-            if (line[c].type == Game::Block::FILL)
+            if (board(l,c) == Game::Block::FILL)
                 count++;
         }
 
-        if (count == line.size()) // Full line
-        {
+        if (count == m_width) // Full line
             to_remove.push_back(l);
-        }
     }
 
+    // Remove full lines and shift other lines
     uint16_t score = 0;
     std::sort(to_remove.begin(), to_remove.end(), std::less<int>());
     int lineoffset = 0;
     for (auto i: to_remove)
     {
-        printf("Full Line: %d \n", i);
-        for (size_t l2 = i-lineoffset; l2 < m_board.size()-1; l2++)
-            for (size_t c = 0; c < m_board[l2].size(); c++)
-                m_board[l2][c] = m_board[l2+1][c];
+        // shift lines above the full line
+        for (size_t l2 = i-lineoffset; l2 < m_height-1; l2++)
+            for (size_t c = 0; c < m_width; c++)
+                board(l2,c) = board(l2+1,c);
 
-        int lastLine = m_board.size()-1;
-        for (size_t c = 0; c < m_board[lastLine].size(); c++)
-            m_board[lastLine][c].type = Game::Block::NONE;
+        // fill last line with empty line
+        int lastLine = m_height-1;
+        for (size_t c = 0; c < m_width; c++)
+            board(lastLine,c) = Game::Block::NONE;
 
         lineoffset++;
         score += 10;

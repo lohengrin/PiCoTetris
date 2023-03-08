@@ -32,8 +32,6 @@ void Display::drawBlock(uint8_t c, uint8_t l)
 
 void Display::draw(const Game &game)
 {
-    auto board = game.getBoard();
-
     p_driver->clear();
 
     // Draw borders
@@ -45,34 +43,19 @@ void Display::draw(const Game &game)
     }
 
     // Draw Board
-    for (size_t l = 0; l < board.size(); l++)
-    {
-        auto &&line = board[l];
-        for (size_t c = 0; c < line.size(); c++)
-        {
-            if (line[c].type == Game::Block::FILL)
-            {
+    for (size_t l = 0; l < game.height(); l++)
+        for (size_t c = 0; c < game.width(); c++)
+            if (game.board(l,c) == Game::Block::FILL)
                 drawBlock(c,l);
-            }
-        }
-    }
 
     // Draw Piece
-    auto && piece = game.getPiece();
-    auto && blocks = piece.getBlocks();
-    auto && pos = piece.getPos();
+    auto piece = game.getPiece();
+    auto pos = piece.getPos();
 
-    for (size_t l = 0; l < blocks.size(); l++)
-    {
-        auto &&line = blocks[l];
-        for (size_t c = 0; c < line.size(); c++)
-        {
-            if (line[c] != 0)
-            {
+    for (int l = 0; l < 4; l++)
+        for (int c = 0; c < 4; c++)
+            if (piece.getBlock(l,c))
                 drawBlock(pos.x+c,pos.y+l);
-            }
-        }
-    }
 
 
     p_driver->update();

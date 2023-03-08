@@ -48,7 +48,7 @@ void DisplayDriverSSD1306::drawPixel(int x, int y)
 void DisplayDriverSSD1306::setup_gpios()
 {
     printf("configuring pins...\n");
-    i2c_init(i2c1, 400000);
+    i2c_init(i2c1, 800000);
     gpio_set_function(19, GPIO_FUNC_I2C);
     gpio_set_function(18, GPIO_FUNC_I2C);
     gpio_pull_up(19);

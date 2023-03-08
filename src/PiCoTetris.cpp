@@ -11,7 +11,7 @@
 #include "ControllerStdin.h"
 
 //! SSD1306 Driver
-#include "DisplayDriverSSD1306.h"
+#include "ssd1306/DisplayDriverSSD1306.h"
 
 #ifdef RASPBERRYPI_PICO_W
 #include "pico/cyw43_arch.h"

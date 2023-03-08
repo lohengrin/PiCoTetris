@@ -19,57 +19,54 @@ uint32_t rnd(void)
     return random;
 }
 
-Piece::Piece() 
+Piece::Piece(const Piece::Position& pos) : m_pos(pos)
 { 
-    m_blocks.resize(4);
-    for (auto&& l : m_blocks)
-        l.resize(4,0);
+    memset(m_blocks, 0, sizeof(m_blocks));
 
-    uint32_t rand = rnd();
-    uint32_t type = rand % 7;
+    uint32_t type = rnd() % 7;
 
     switch (type) {
         case 0: // Square
-            m_blocks[1][1] = 1;
-            m_blocks[1][2] = 1;
-            m_blocks[2][2] = 1;
-            m_blocks[2][1] = 1;
+            m_blocks[1][1] = true;
+            m_blocks[1][2] = true;
+            m_blocks[2][2] = true;
+            m_blocks[2][1] = true;
             break;
         case 1: // Line
-            m_blocks[0][2] = 1;
-            m_blocks[1][2] = 1;
-            m_blocks[2][2] = 1;
-            m_blocks[3][2] = 1;
+            m_blocks[0][2] = true;
+            m_blocks[1][2] = true;
+            m_blocks[2][2] = true;
+            m_blocks[3][2] = true;
             break;
         case 2: // L
-            m_blocks[0][1] = 1;
-            m_blocks[1][1] = 1;
-            m_blocks[2][1] = 1;
-            m_blocks[2][2] = 1;
+            m_blocks[0][1] = true;
+            m_blocks[1][1] = true;
+            m_blocks[2][1] = true;
+            m_blocks[2][2] = true;
             break;
         case 3: // L invert
-            m_blocks[0][2] = 1;
-            m_blocks[1][2] = 1;
-            m_blocks[2][2] = 1;
-            m_blocks[2][1] = 1;
+            m_blocks[0][2] = true;
+            m_blocks[1][2] = true;
+            m_blocks[2][2] = true;
+            m_blocks[2][1] = true;
             break;
         case 4: // T
-            m_blocks[0][2] = 1;
-            m_blocks[1][2] = 1;
-            m_blocks[2][2] = 1;
-            m_blocks[1][1] = 1;
+            m_blocks[0][2] = true;
+            m_blocks[1][2] = true;
+            m_blocks[2][2] = true;
+            m_blocks[1][1] = true;
             break;
         case 5: // S
-            m_blocks[0][2] = 1;
-            m_blocks[1][2] = 1;
-            m_blocks[1][1] = 1;
-            m_blocks[2][1] = 1;
+            m_blocks[0][2] = true;
+            m_blocks[1][2] = true;
+            m_blocks[1][1] = true;
+            m_blocks[2][1] = true;
             break;
         case 6: // S invert
-            m_blocks[0][1] = 1;
-            m_blocks[1][1] = 1;
-            m_blocks[1][2] = 1;
-            m_blocks[2][2] = 1;
+            m_blocks[0][1] = true;
+            m_blocks[1][1] = true;
+            m_blocks[1][2] = true;
+            m_blocks[2][2] = true;
             break;
     };
 }

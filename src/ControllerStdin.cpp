@@ -20,6 +20,8 @@ Controller::Command ControllerStdin::step()
             return Controller::DOWN;
         case ' ':
             return Controller::ROTATE;
+        case 'r':
+            return Controller::RESET;
 
         default:
     	    return Controller::NONE;

@@ -24,17 +24,21 @@ src/Game.h
 src/Display.cpp
 src/Display.h
 src/DisplayDriver.h
-src/DisplayDriverSSD1306.cpp
-src/DisplayDriverSSD1306.h
 src/Controller.h
 src/ControllerStdin.h
 src/ControllerStdin.cpp
 src/Piece.cpp
 src/Piece.h
-src/ssd1306.cpp
-src/ssd1306.h
-src/font.h
+
+# SSD1306 Display implementation
+src/ssd1306/DisplayDriverSSD1306.cpp
+src/ssd1306/DisplayDriverSSD1306.h
+src/ssd1306/ssd1306.cpp
+src/ssd1306/ssd1306.h
+src/ssd1306/font.h
 )
+
+target_include_directories(PiCoTetris PRIVATE src)
 
 # Add pico_stdlib library which aggregates commonly used features
 target_link_libraries(PiCoTetris 
