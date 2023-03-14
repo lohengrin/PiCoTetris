@@ -10,8 +10,15 @@
 //! STDIN Controller
 #include "ControllerStdin.h"
 
-//! SSD1306 Driver
-#include "ssd1306/DisplayDriverSSD1306.h"
+#ifdef SSD1306
+	//! SSD1306 Driver
+	#include "ssd1306/DisplayDriverSSD1306.h"
+#endif
+
+#ifdef PIMORONI
+	//! PIMORONI Driver
+	#include "pimoroni/DisplayDriverPimoroni.h"
+#endif
 
 #ifdef RASPBERRYPI_PICO_W
 #include "pico/cyw43_arch.h"
@@ -41,8 +48,16 @@ int main()
 	Game game(10,22);
 
 	std::unique_ptr<Controller> controller(new ControllerStdin);
+
+// Display selection at compilation time
+#ifdef PIMORONI
+	std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverPimoroni);
+#endif
+#ifdef SSD1306
 	std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverSSD1306);
-	Display disp(disp_driver.get(), Display::PORTRAIT);
+#endif
+
+	Display disp(disp_driver.get(), Display::PORTRAIT, game);
 
 	absolute_time_t  nextStep = delayed_by_us(get_absolute_time(),PERIOD_US);
 

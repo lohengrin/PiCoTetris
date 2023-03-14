@@ -13,8 +13,9 @@ public:
             NONE = 0x00,
             FILL = 0x01
         };
-        Block() : type(NONE) {}
+        Block() : type(NONE), color(Color::WHITE) {}
         TYPE type;
+        Color color;
     };
 
     Game(int width = 10, int height = 22);
@@ -30,8 +31,8 @@ public:
     void reset();
 
     //! Board accessors
-    Block::TYPE& board(int x, int y) { return m_board[x*m_width+y].type; }
-    const Block::TYPE& board(int x, int y) const { return m_board[x*m_width+y].type; }
+    Block& board(int x, int y) { return m_board[x*m_width+y]; }
+    const Block& board(int x, int y) const { return m_board[x*m_width+y]; }
     int width() const { return m_width; }
     int height() const { return m_height; }
 

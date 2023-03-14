@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Colors.h"
+
 //! Abstract interface of display driver
 class DisplayDriver {
 public:
@@ -15,6 +17,7 @@ public:
     virtual void clear() = 0;
     virtual void update() = 0;
 
+    virtual void setColor(Color color) = 0;
     virtual void drawLine(int x1, int y1, int x2, int y2) = 0;
     virtual void drawPixel(int x, int y) = 0;
 };

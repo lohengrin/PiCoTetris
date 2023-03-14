@@ -1,0 +1,14 @@
+#include "Colors.h"
+
+uint32_t ColorsRGB[] = {
+    0x000000,
+    0x808080,
+    0xFFFFFF,
+    0xFF0000,
+    0xFFFF00,
+    0x00FF00,
+    0x0000FF,
+    0xFFF8DC,
+    0xFF4500,
+    0x8A2BE2
+};

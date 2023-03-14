@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Colors.h"
+
 #include <stdint.h>
 #include <string.h>
 #include <vector>
@@ -15,13 +17,13 @@ public:
 
     const Position& getPos() const { return m_pos; }
     void setPos(const Position& pos ) { m_pos = pos; }
-
     void rotate();
 
     bool getBlock(int x, int y) const { return m_blocks[x][y]; }
-
+    Color getColor() const { return m_color; }
 protected:
     bool m_blocks[4][4];
 
     Position m_pos;
+    Color m_color;
 };

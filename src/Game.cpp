@@ -117,11 +117,11 @@ uint8_t Game::checkCollision()
                 int x = pos.x+c;
                 int y = pos.y+l;
 
-                if ((x == 0) || (board(y,x-1) == Block::FILL)) 
+                if ((x == 0) || (board(y,x-1).type == Block::FILL)) 
                     ret = ret | DirLeft;
-                if ((x == m_width-1) || (board(y,x+1) == Block::FILL)) 
+                if ((x == m_width-1) || (board(y,x+1).type == Block::FILL)) 
                     ret = ret | DirRight;
-                if ((y == 0) || (board(y-1,x) == Block::FILL))
+                if ((y == 0) || (board(y-1,x).type == Block::FILL))
                     ret = ret | DirBottom;
             }
         }
@@ -143,7 +143,9 @@ void Game::nextPiece()
             {
                 auto x = pos.x+c;
                 auto y = pos.y+l;
-                board(y,x) = Block::FILL;
+                Block& b = board(y,x);
+                b.type = Block::FILL;
+                b.color = m_currentPiece.getColor();
             }
         }
     }
@@ -163,7 +165,7 @@ uint16_t Game::checkLines()
         int count = 0;
         for (size_t c = 0; c < m_width; c++)
         {
-            if (board(l,c) == Game::Block::FILL)
+            if (board(l,c).type == Game::Block::FILL)
                 count++;
         }
 
@@ -185,7 +187,7 @@ uint16_t Game::checkLines()
         // fill last line with empty line
         int lastLine = m_height-1;
         for (size_t c = 0; c < m_width; c++)
-            board(lastLine,c) = Game::Block::NONE;
+            board(lastLine,c).type = Game::Block::NONE;
 
         lineoffset++;
         score += 10;

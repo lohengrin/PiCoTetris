@@ -1,23 +1,23 @@
 #include "Display.h"
 #include "DisplayDriver.h"
 
-Display::Display(DisplayDriver *driver, Orientation orient) : p_driver(driver)
+Display::Display(DisplayDriver *driver, Orientation orient, const Game& game) : p_driver(driver)
 {
     p_driver->init();
 
-    int width = p_driver->getWidth();
-    int height = p_driver->getHeight();
+    m_width = p_driver->getWidth();
+    m_height = p_driver->getHeight();
 
     //! Invert
     if (orient == PORTRAIT)
     {
-        width = p_driver->getHeight();
-        height = p_driver->getWidth();
+        m_width = p_driver->getHeight();
+        m_height = p_driver->getWidth();
     }
 
-    m_blockSize = 4;
+    m_blockSize = std::min(m_width/(game.width()+2), m_height/(game.height()+2));
     m_borderSize = 1;
-    m_offsetBorder = 7;
+    m_offsetBorder = m_blockSize;
 }
 
 void Display::drawBlock(uint8_t c, uint8_t l)
@@ -34,23 +34,34 @@ void Display::draw(const Game &game)
 {
     p_driver->clear();
 
+    p_driver->setColor(Color::GREY);
+
+    uint16_t offset = (game.width()+1)*m_blockSize + m_offsetBorder;
     // Draw borders
     for (int i = 0; i < m_offsetBorder; i++)
     {
-        p_driver->drawLine(0, i, 127, i);
-        p_driver->drawLine(0, i + 51 + m_offsetBorder, 127, i + 51 + m_offsetBorder);
-        p_driver->drawLine(i, 0, i, 51 + 2*m_offsetBorder);
+        p_driver->drawLine(0, i, m_height, i);
+        p_driver->drawLine(0, i + offset, m_height, i + offset);
+        p_driver->drawLine(i, 0, i, offset);
     }
 
     // Draw Board
     for (size_t l = 0; l < game.height(); l++)
         for (size_t c = 0; c < game.width(); c++)
-            if (game.board(l,c) == Game::Block::FILL)
+        {
+            const Game::Block & b = game.board(l,c);
+            if (b.type == Game::Block::FILL)
+            {
+                p_driver->setColor(b.color);
                 drawBlock(c,l);
+            }
+        }
 
     // Draw Piece
     auto piece = game.getPiece();
     auto pos = piece.getPos();
+
+    p_driver->setColor(piece.getColor());
 
     for (int l = 0; l < 4; l++)
         for (int c = 0; c < 4; c++)

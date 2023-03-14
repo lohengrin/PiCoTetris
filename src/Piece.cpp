@@ -31,42 +31,49 @@ Piece::Piece(const Piece::Position& pos) : m_pos(pos)
             m_blocks[1][2] = true;
             m_blocks[2][2] = true;
             m_blocks[2][1] = true;
+            m_color = Color::ORANGE;
             break;
         case 1: // Line
             m_blocks[0][2] = true;
             m_blocks[1][2] = true;
             m_blocks[2][2] = true;
             m_blocks[3][2] = true;
+            m_color = Color::RED;
             break;
         case 2: // L
             m_blocks[0][1] = true;
             m_blocks[1][1] = true;
             m_blocks[2][1] = true;
             m_blocks[2][2] = true;
+            m_color = Color::YELLOW;
             break;
         case 3: // L invert
             m_blocks[0][2] = true;
             m_blocks[1][2] = true;
             m_blocks[2][2] = true;
             m_blocks[2][1] = true;
+            m_color = Color::ORANGE;
             break;
         case 4: // T
             m_blocks[0][2] = true;
             m_blocks[1][2] = true;
             m_blocks[2][2] = true;
             m_blocks[1][1] = true;
+            m_color = Color::BLUE;
             break;
         case 5: // S
             m_blocks[0][2] = true;
             m_blocks[1][2] = true;
             m_blocks[1][1] = true;
             m_blocks[2][1] = true;
+            m_color = Color::GREEN;
             break;
         case 6: // S invert
             m_blocks[0][1] = true;
             m_blocks[1][1] = true;
             m_blocks[1][2] = true;
             m_blocks[2][2] = true;
+            m_color = Color::PURPLE;
             break;
     };
 }
