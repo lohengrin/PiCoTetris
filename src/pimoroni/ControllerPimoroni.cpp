@@ -1,31 +1,26 @@
+
 #include "ControllerPimoroni.h"
 #include "pico/stdlib.h"
 
-ControllerPimoroni::ControllerPimoroni()
+using namespace pimoroni;
+
+const int repeat_time = 200;
+const int hold_time = 400;
+
+ControllerPimoroni::ControllerPimoroni() :
+        button_a(PicoDisplay::A,Polarity::ACTIVE_LOW, repeat_time,hold_time),
+        button_b(PicoDisplay::B,Polarity::ACTIVE_LOW, repeat_time,hold_time),
+        button_x(PicoDisplay::X,Polarity::ACTIVE_LOW, repeat_time,hold_time),
+        button_y(PicoDisplay::Y,Polarity::ACTIVE_LOW, repeat_time,hold_time)
 {
 }
 
 Controller::Command ControllerPimoroni::step()
 {
-    int c = getchar_timeout_us(0);
-    switch (c)
-    {
-        case PICO_ERROR_TIMEOUT:
-            return Controller::NONE;
-        case 'q':
-            return Controller::LEFT;
-        case 'd':
-            return Controller::RIGHT;
-        case 's':
-            return Controller::DOWN;
-        case ' ':
-            return Controller::ROTATE;
-        case 'r':
-            return Controller::RESET;
-
-        default:
-    	    return Controller::NONE;
-    }
+    if (button_a.read()) return Controller::LEFT;
+    if (button_b.read()) return Controller::RIGHT;
+    if (button_x.read()) return Controller::DOWN;
+    if (button_y.read()) return Controller::ROTATE;
 
     return Controller::NONE;
 }

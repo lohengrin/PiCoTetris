@@ -18,6 +18,7 @@
 #ifdef PIMORONI
 	//! PIMORONI Driver
 	#include "pimoroni/DisplayDriverPimoroni.h"
+	#include "pimoroni/ControllerPimoroni.h"
 #endif
 
 #ifdef RASPBERRYPI_PICO_W
@@ -47,13 +48,13 @@ int main()
 
 	Game game(10,22);
 
-	std::unique_ptr<Controller> controller(new ControllerStdin);
-
 // Display selection at compilation time
 #ifdef PIMORONI
+	std::unique_ptr<Controller> controller(new ControllerPimoroni);
 	std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverPimoroni);
 #endif
 #ifdef SSD1306
+	std::unique_ptr<Controller> controller(new ControllerStdin);
 	std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverSSD1306);
 #endif
 
