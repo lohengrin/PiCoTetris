@@ -1,7 +1,8 @@
-#include <stdio.h>
 
-// PICO SDK
-#include "pico/stdlib.h"
+/*******************************************************************/
+/* PICO Based Tetris like game                                     */
+/* Guillaume Millet												   */
+/*******************************************************************/
 
 #include "Game.h"
 #include "Display.h"
@@ -11,26 +12,26 @@
 #include "ControllerStdin.h"
 
 #ifdef SSD1306
-//! SSD1306 Driver
-#include "ssd1306/DisplayDriverSSD1306.h"
+	//! SSD1306 Driver
+	#include "ssd1306/DisplayDriverSSD1306.h"
 #endif
 
 #ifdef PIMORONI
-//! PIMORONI Driver
-#include "pimoroni/DisplayDriverPimoroni.h"
-#include "pimoroni/ControllerPimoroni.h"
-#include "rgbled.hpp"
+	//! PIMORONI Driver
+	#include "pimoroni/DisplayDriverPimoroni.h"
+	#include "pimoroni/ControllerPimoroni.h"
+	#include "rgbled.hpp"
 #endif
 
 #ifdef RASPBERRYPI_PICO_W
 #include "pico/cyw43_arch.h"
 #endif
 
+// PICO SDK
+#include "pico/stdlib.h"
+
 #include <memory>
-#include <string.h>
-#include <string>
-#include <deque>
-#include <numeric>
+#include <stdio.h>
 
 #define PERIOD_US 10000 // 100 Hz
 
