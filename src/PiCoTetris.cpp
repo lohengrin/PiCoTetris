@@ -11,14 +11,15 @@
 #include "ControllerStdin.h"
 
 #ifdef SSD1306
-	//! SSD1306 Driver
-	#include "ssd1306/DisplayDriverSSD1306.h"
+//! SSD1306 Driver
+#include "ssd1306/DisplayDriverSSD1306.h"
 #endif
 
 #ifdef PIMORONI
-	//! PIMORONI Driver
-	#include "pimoroni/DisplayDriverPimoroni.h"
-	#include "pimoroni/ControllerPimoroni.h"
+//! PIMORONI Driver
+#include "pimoroni/DisplayDriverPimoroni.h"
+#include "pimoroni/ControllerPimoroni.h"
+#include "rgbled.hpp"
 #endif
 
 #ifdef RASPBERRYPI_PICO_W
@@ -31,7 +32,7 @@
 #include <deque>
 #include <numeric>
 
-#define PERIOD_US 10000  // 100 Hz
+#define PERIOD_US 10000 // 100 Hz
 
 int main()
 {
@@ -46,41 +47,61 @@ int main()
 	}
 #endif
 
-	Game game(10,22);
+	while (true)
+	{
+		Game game(10, 22);
 
 // Display selection at compilation time
 #ifdef PIMORONI
-	std::unique_ptr<Controller> controller(new ControllerPimoroni);
-	std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverPimoroni);
+		pimoroni::RGBLED led(pimoroni::PicoDisplay::LED_R, pimoroni::PicoDisplay::LED_G, pimoroni::PicoDisplay::LED_B);
+		led.set_rgb(0, 50, 0);
+
+		std::unique_ptr<Controller> controller(new ControllerPimoroni);
+		std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverPimoroni);
 #endif
 #ifdef SSD1306
-	std::unique_ptr<Controller> controller(new ControllerStdin);
-	std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverSSD1306);
+		std::unique_ptr<Controller> controller(new ControllerStdin);
+		std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverSSD1306);
 #endif
 
-	Display disp(disp_driver.get(), Display::PORTRAIT, game);
+		Display disp(disp_driver.get(), Display::PORTRAIT, game);
 
-	absolute_time_t  nextStep = delayed_by_us(get_absolute_time(),PERIOD_US);
+		//! Scheduling
+		absolute_time_t nextStep = delayed_by_us(get_absolute_time(), PERIOD_US);
 
-	int i = 0;
-	int inc = 1;
+		//! Current game status
+		Game::GameStatus ret = Game::RUNNING;
+		Controller::Command cmd = Controller::NONE;
 
-	while (true)
-	{
-		// Get joystick event
-		Controller::Command cmd = controller->step();
+		//! Game main loop
+		while ((ret == Game::RUNNING) && (cmd != Controller::RESET))
+		{
+			// Get joystick event
+			cmd = controller->step();
 
-		game.setCommand(cmd);
+			game.setCommand(cmd);
 
-		// Step Game
-		game.step();
+			// Step Game
+			ret = game.step();
 
-		// Display Game
-		disp.draw(game);
+			// Display Game
+			disp.draw(game);
 
-		// Wait next step according to PERIOD_US
-		busy_wait_until(nextStep);
-		nextStep = delayed_by_us(nextStep,PERIOD_US);
+			// Wait next step according to PERIOD_US
+			busy_wait_until(nextStep);
+			nextStep = delayed_by_us(nextStep, PERIOD_US);
+		}
+
+		// End game wait for reset
+		while (controller->step() != Controller::RESET)
+		{
+#ifdef PIMORONI
+			led.set_rgb(50, 0, 0);
+			sleep_ms(200);
+			led.set_rgb(0, 0, 50);
+#endif
+			sleep_ms(200);
+		}
 	}
 	return 0;
 }

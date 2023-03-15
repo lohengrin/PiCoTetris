@@ -8,6 +8,11 @@
 
 class Game {
 public:
+    enum GameStatus {
+        RUNNING,
+        LOST
+    };
+
     struct Block {
         enum TYPE {
             NONE = 0x00,
@@ -25,7 +30,7 @@ public:
     void setCommand(Controller::Command cmd);
 
     //! Step the game
-    void step();
+    GameStatus step();
 
     //! Restart
     void reset();
@@ -46,14 +51,19 @@ private:
     const uint8_t DirLeft   = 0x02;
     const uint8_t DirRight  = 0x04;
 
-    //! Return if piece collide in one or more directions
-    uint8_t checkCollision();
+    //! Return if piece is in contact in one or more directions
+    uint8_t checkContact();
+
+    //! Return true if the piece collide with other blocks or borders
+    //! Used to avoid non valid rotation or detect end game
+    bool checkCollision();
 
     //! Check if a line is completed
     uint16_t checkLines();
 
     //! Switch to next Piece
-    void nextPiece();
+    //! return false if new piece collide
+    bool nextPiece();
 
     //! The game board
     Block *m_board;

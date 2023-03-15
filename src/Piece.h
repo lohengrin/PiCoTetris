@@ -3,11 +3,10 @@
 #include "Colors.h"
 
 #include <stdint.h>
-#include <string.h>
-#include <vector>
 
 class Piece {
 public:
+    //! Position in game board coordinates
     struct Position {
         int8_t x=0;
         int8_t y=0;   
@@ -21,6 +20,7 @@ public:
 
     bool getBlock(int x, int y) const { return m_blocks[x][y]; }
     Color getColor() const { return m_color; }
+
 protected:
     bool m_blocks[4][4];
 

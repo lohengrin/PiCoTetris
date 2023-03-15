@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include <functional>
+#include <string.h>
 
 //-----------------------------------------------------------------------
 Game::Game(int width, int height) :
@@ -30,7 +31,7 @@ void Game::setCommand(Controller::Command cmd)
     {
         case Controller::LEFT:
         {
-            if (!(checkCollision() & DirLeft))
+            if (!(checkContact() & DirLeft))
             {
                 pos.x -= 1;
                 m_currentPiece.setPos(pos);
@@ -39,7 +40,7 @@ void Game::setCommand(Controller::Command cmd)
         break;
         case Controller::RIGHT:
         {
-            if (!(checkCollision() & DirRight))
+            if (!(checkContact() & DirRight))
             {
                 pos.x += 1;
                 m_currentPiece.setPos(pos);
@@ -48,7 +49,7 @@ void Game::setCommand(Controller::Command cmd)
         break;
         case Controller::DOWN:
         {
-            if (!(checkCollision() & DirBottom))
+            if (!(checkContact() & DirBottom))
             {
                 pos.y -= 1;
                 m_currentPiece.setPos(pos);
@@ -59,23 +60,27 @@ void Game::setCommand(Controller::Command cmd)
         break;
         case Controller::ROTATE:
         {
+            auto tmp = m_currentPiece;
             m_currentPiece.rotate();
+            if (checkCollision()) // Non valid rotation => go back
+                m_currentPiece=tmp;
         }
         break;
     };
 }
 
 //-----------------------------------------------------------------------
-void Game::step()
+Game::GameStatus Game::step()
 {
     static uint64_t count = 1;
     const int speed = 100;
     
     if (count++ % speed == 0)
     {
-        if (checkCollision() & DirBottom)
+        if (checkContact() & DirBottom)
         {
-            nextPiece();
+            if (!nextPiece())
+                return LOST;
             count = 1;
         }
         else
@@ -87,6 +92,8 @@ void Game::step()
 
         checkLines();
     }
+
+    return RUNNING;
 }
 
 //-----------------------------------------------------------------------
@@ -101,7 +108,7 @@ void Game::reset()
 }
 
 //-----------------------------------------------------------------------
-uint8_t Game::checkCollision()
+uint8_t Game::checkContact()
 {
     auto && pos = m_currentPiece.getPos();
 
@@ -131,7 +138,7 @@ uint8_t Game::checkCollision()
 }
 
 //-----------------------------------------------------------------------
-void Game::nextPiece()
+bool Game::nextPiece()
 {
     auto && pos = m_currentPiece.getPos();
 
@@ -152,6 +159,32 @@ void Game::nextPiece()
 
     m_currentPiece = m_nextPiece;
     m_nextPiece = Piece(m_InitPos);
+
+    return !checkCollision(); // New piece collides => end game
+
+}
+
+bool Game::checkCollision()
+{
+    auto && pos = m_currentPiece.getPos();
+
+    // Scan current piece to compute collision with border and board
+    for (int l = 0; l < 4; l++)
+    {
+        for (int c = 0; c < 4; c++)
+        {
+            if (m_currentPiece.getBlock(l,c))
+            {
+                int x = pos.x+c;
+                int y = pos.y+l;
+
+                if ((x < 0) || (x == m_width-1) || (board(y,x).type == Block::FILL)) 
+                    return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------

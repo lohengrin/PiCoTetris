@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <stdio.h>
+#include <string.h>
 
 uint32_t rnd(void)
 {
@@ -52,7 +53,7 @@ Piece::Piece(const Piece::Position& pos) : m_pos(pos)
             m_blocks[1][2] = true;
             m_blocks[2][2] = true;
             m_blocks[2][1] = true;
-            m_color = Color::ORANGE;
+            m_color = Color::BROWN;
             break;
         case 4: // T
             m_blocks[0][2] = true;

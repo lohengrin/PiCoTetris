@@ -17,6 +17,8 @@ ControllerPimoroni::ControllerPimoroni() :
 
 Controller::Command ControllerPimoroni::step()
 {
+    if (button_x.raw() && button_y.raw()) return Controller::RESET;
+
     if (button_a.read()) return Controller::LEFT;
     if (button_b.read()) return Controller::RIGHT;
     if (button_x.read()) return Controller::DOWN;
