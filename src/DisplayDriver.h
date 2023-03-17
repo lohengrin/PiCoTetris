@@ -5,6 +5,7 @@
 //! Abstract interface of display driver
 class DisplayDriver {
 public:
+    virtual ~DisplayDriver() {}
 
     //! Initialize display
     virtual bool init() = 0;

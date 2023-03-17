@@ -7,9 +7,15 @@
 #include "Game.h"
 #include "Display.h"
 #include "Controller.h"
+#include "pico/stdlib.h"
 
 //! STDIN Controller
 #include "ControllerStdin.h"
+
+#ifdef DVI
+	//! DVI Driver
+	#include "dvi/DisplayDriverDvi.h"
+#endif
 
 #ifdef SSD1306
 	//! SSD1306 Driver
@@ -33,7 +39,7 @@
 #include <memory>
 #include <stdio.h>
 
-#define PERIOD_US 10000 // 100 Hz
+#define PERIOD_US 1000 // 1000 Hz
 
 int main()
 {
@@ -64,6 +70,10 @@ int main()
 		std::unique_ptr<Controller> controller(new ControllerStdin);
 		std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverSSD1306);
 #endif
+#ifdef DVI
+		std::unique_ptr<Controller> controller(new ControllerStdin);
+		std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverDvi);
+#endif
 
 		Display disp(disp_driver.get(), Display::PORTRAIT, game);
 
@@ -89,8 +99,8 @@ int main()
 			disp.draw(game);
 
 			// Wait next step according to PERIOD_US
-			busy_wait_until(nextStep);
-			nextStep = delayed_by_us(nextStep, PERIOD_US);
+			//busy_wait_until(nextStep);
+			//nextStep = delayed_by_us(nextStep, PERIOD_US);
 		}
 
 		// End game wait for reset

@@ -46,8 +46,8 @@ void Display::draw(const Game &game)
     }
 
     // Draw Board
-    for (size_t l = 0; l < game.height(); l++)
-        for (size_t c = 0; c < game.width(); c++)
+    for (int l = 0; l < game.height(); l++)
+        for (int c = 0; c < game.width(); c++)
         {
             const Game::Block & b = game.board(l,c);
             if (b.type == Game::Block::FILL)
