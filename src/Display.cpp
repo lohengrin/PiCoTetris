@@ -50,7 +50,7 @@ void Display::draw(const Game &game)
         for (int c = 0; c < game.width(); c++)
         {
             const Game::Block & b = game.board(l,c);
-            if (b.type == Game::Block::FILL)
+            if (b.fill)
             {
                 p_driver->setColor(b.color);
                 drawBlock(c,l);

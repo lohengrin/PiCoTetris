@@ -27,10 +27,11 @@ public:
     void drawPixel(int x, int y) override;
 
     static struct dvi_inst dvi0;
-    static pimoroni::PicoGraphics_PenRGB565 *graphics;
 
 protected:
-
+    int frontb = 0;
+    int backb = 1;
+    pimoroni::PicoGraphics_PenRGB332 graphics;
     pimoroni::Pen BG; // Background pen
     std::vector<pimoroni::Pen> m_pens; // Colors pens
 };

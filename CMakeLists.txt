@@ -161,12 +161,6 @@ if (${SSD1306_DISPLAY})
     target_compile_definitions(PiCoTetris PRIVATE SSD1306)
 endif()
 
-IF (${PICO_BOARD} STREQUAL "pico_w")
-target_link_libraries(PiCoTetris 
-    pico_cyw43_arch_none
-)
-ENDIF()
-
 pico_enable_stdio_usb(PiCoTetris 1)
 pico_enable_stdio_uart(PiCoTetris 0)
 

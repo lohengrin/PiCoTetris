@@ -14,12 +14,8 @@ public:
     };
 
     struct Block {
-        enum TYPE {
-            NONE = 0x00,
-            FILL = 0x01
-        };
-        Block() : type(NONE), color(Color::WHITE) {}
-        TYPE type;
+        Block() : fill(false), color(Color::WHITE) {}
+        bool fill;
         Color color;
     };
 

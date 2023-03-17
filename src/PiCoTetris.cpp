@@ -29,30 +29,17 @@
 	#include "rgbled.hpp"
 #endif
 
-#ifdef RASPBERRYPI_PICO_W
-#include "pico/cyw43_arch.h"
-#endif
-
 // PICO SDK
 #include "pico/stdlib.h"
 
 #include <memory>
 #include <stdio.h>
 
-#define PERIOD_US 1000 // 1000 Hz
+#define PERIOD_US 100000 // 10 Hz
 
 int main()
 {
 	stdio_init_all();
-
-#ifdef RASPBERRYPI_PICO_W
-	// Init Wifi if using PICO_W (not used yet)
-	if (cyw43_arch_init())
-	{
-		printf("WiFi init failed");
-		return -1;
-	}
-#endif
 
 	while (true)
 	{
@@ -99,8 +86,8 @@ int main()
 			disp.draw(game);
 
 			// Wait next step according to PERIOD_US
-			//busy_wait_until(nextStep);
-			//nextStep = delayed_by_us(nextStep, PERIOD_US);
+			busy_wait_until(nextStep);
+			nextStep = delayed_by_us(nextStep, PERIOD_US);
 		}
 
 		// End game wait for reset
