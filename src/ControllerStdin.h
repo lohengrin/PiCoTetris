@@ -2,7 +2,8 @@
 
 #include "Controller.h"
 
-class ControllerStdin : public Controller {
+class ControllerStdin : public Controller
+{
 public:
         ControllerStdin();
 

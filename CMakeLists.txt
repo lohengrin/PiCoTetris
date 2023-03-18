@@ -3,17 +3,17 @@ cmake_minimum_required(VERSION 3.13)
 #Defualt to pico_w
 if(NOT DEFINED PICO_BOARD)
 	SET(PICO_BOARD pico_w)
+    set(BTSTACK_ROOT ${PICO_SDK_PATH}/lib/btstack)
 endif()
-
 
 SET(DVI_DEFAULT_SERIAL_CONFIG pimoroni_demo_hdmi_cfg)
 
-option(PIMORONI_DISPLAY "Support for Pimoroni display pack (1,14\")" OFF)
-option(SSD1306_DISPLAY "Support for ssd1306 display" OFF)
-option(DVI_DISPLAY "Support for DVI display" OFF)
+option(DISPLAY_PIMORONI "Support for Pimoroni display pack (1,14\")" OFF)
+option(DISPLAY_SSD1306 "Support for ssd1306 display" OFF)
+option(DISPLAY_DIV "Support for DVI display" OFF)
 
-IF(NOT(${PIMORONI_DISPLAY} OR ${SSD1306_DISPLAY} OR ${DVI_DISPLAY}))
-    message( FATAL_ERROR "No Display selected, please use PIMORONI_DISPLAY, SSD1306_DISPLAY or DVI_DISPLAY." )
+IF(NOT(${DISPLAY_PIMORONI} OR ${DISPLAY_SSD1306} OR ${DISPLAY_DIV}))
+    message( FATAL_ERROR "No Display selected, please use DISPLAY_PIMORONI, DISPLAY_SSD1306 or DISPLAY_DIV." )
 ENDIF()
 
 
@@ -22,7 +22,7 @@ ENDIF()
 include(pico_sdk_import.cmake)
 
 # Optionnal PIMORONI SDK for display
-if(${PIMORONI_DISPLAY} OR ${DVI_DISPLAY})
+if(${DISPLAY_PIMORONI} OR ${DISPLAY_DIV})
     include(pimoroni_pico_import.cmake)
 endif()
 
@@ -34,7 +34,15 @@ set(CMAKE_CXX_STANDARD 17)
 # initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-if (${DVI_DISPLAY})
+IF (${PICO_BOARD} STREQUAL "pico_w")
+    set(BT_SRC
+    src/bt/picow_bt.c
+    src/bt/picow_bt.h
+    src/bt/hid_host.c
+    )
+ENDIF()
+
+if (${DISPLAY_DIV})
     include(libraries/pico_graphics/pico_graphics)
     include(drivers/button/button)
 
@@ -46,7 +54,7 @@ if (${DVI_DISPLAY})
   )
 endif()
 
-if(${PIMORONI_DISPLAY})
+if(${DISPLAY_PIMORONI})
  include(common/pimoroni_i2c)
  include(common/pimoroni_bus)
  include(libraries/pico_display/pico_display)
@@ -63,7 +71,7 @@ if(${PIMORONI_DISPLAY})
  )
 endif()
 
-if (${SSD1306_DISPLAY})
+if (${DISPLAY_SSD1306})
  set(SSD1306_SRC
     # SSD1306 Display implementation
     src/ssd1306/DisplayDriverSSD1306.cpp
@@ -75,7 +83,7 @@ if (${SSD1306_DISPLAY})
 endif()
 
 
-if(${DVI_DISPLAY})
+if(${DISPLAY_DIV})
     add_subdirectory(libdvi)
     add_subdirectory(libsprite)
 endif()
@@ -100,9 +108,10 @@ src/Colors.h
 ${PIMORONI_SRC}
 ${SSD1306_SRC}
 ${DVI_SRC}
+${BT_SRC}
 )
 
-if(${DVI_DISPLAY})
+if(${DISPLAY_DIV})
     target_compile_options(PiCoTetris PRIVATE -Wall -Wno-narrowing)
     target_compile_definitions(PiCoTetris PRIVATE
     DVI_DEFAULT_SERIAL_CONFIG=${DVI_DEFAULT_SERIAL_CONFIG}
@@ -143,7 +152,7 @@ target_link_libraries(PiCoTetris
     hardware_i2c
 )
 
-if(${PIMORONI_DISPLAY})
+if(${DISPLAY_PIMORONI})
     target_link_libraries(PiCoTetris 
         hardware_spi
         hardware_pwm
@@ -156,12 +165,22 @@ if(${PIMORONI_DISPLAY})
 target_compile_definitions(PiCoTetris PRIVATE PIMORONI)
 endif()
 
-if (${SSD1306_DISPLAY})
+if (${DISPLAY_SSD1306})
     target_link_libraries(PiCoTetris 
         hardware_i2c
     )
     target_compile_definitions(PiCoTetris PRIVATE SSD1306)
 endif()
+
+IF (${PICO_BOARD} STREQUAL "pico_w")
+target_include_directories(PiCoTetris PRIVATE src/bt)
+target_link_libraries(PiCoTetris 
+    pico_cyw43_arch_none
+    pico_btstack_ble
+    pico_btstack_classic
+    pico_btstack_cyw43
+)
+ENDIF()
 
 pico_enable_stdio_usb(PiCoTetris 1)
 pico_enable_stdio_uart(PiCoTetris 0)

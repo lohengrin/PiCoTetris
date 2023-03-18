@@ -3,11 +3,12 @@
 #include "Colors.h"
 
 //! Abstract interface of display driver
-class DisplayDriver {
+class DisplayDriver
+{
 public:
-
-    struct Point {
-        int16_t x=0,y=0;
+    struct Point
+    {
+        int16_t x = 0, y = 0;
     };
 
     virtual ~DisplayDriver() {}
@@ -23,7 +24,7 @@ public:
     virtual void clear() = 0;
     virtual void update() = 0;
 
-    virtual void setColor(const Color& color) = 0;
-    virtual void drawLine(const Point& p1, const Point& p2) = 0;
-    virtual void drawPixel(const Point& p) = 0;
+    virtual void setColor(const Color &color) = 0;
+    virtual void drawLine(const Point &p1, const Point &p2) = 0;
+    virtual void drawPixel(const Point &p) = 0;
 };

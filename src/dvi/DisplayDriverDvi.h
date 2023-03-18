@@ -23,9 +23,9 @@ public:
     void clear() override;
     void update() override;
 
-    void setColor(const Color& color) override;
-    void drawLine(const Point& p1, const Point& p2) override;
-    void drawPixel(const Point& p) override;
+    void setColor(const Color &color) override;
+    void drawLine(const Point &p1, const Point &p2) override;
+    void drawPixel(const Point &p) override;
 
     static struct dvi_inst dvi0;
 
@@ -33,6 +33,6 @@ protected:
     int frontb = 0;
     int backb = 1;
     pimoroni::PicoGraphics_PenRGB332 graphics;
-    pimoroni::Pen BG; // Background pen
+    pimoroni::Pen BG;                  // Background pen
     std::vector<pimoroni::Pen> m_pens; // Colors pens
 };

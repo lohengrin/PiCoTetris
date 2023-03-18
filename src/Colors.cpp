@@ -10,5 +10,4 @@ uint32_t ColorsRGB[] = {
     0x0000FF,
     0xFFF8DC,
     0xFF4500,
-    0x8A2BE2
-};
+    0x8A2BE2};

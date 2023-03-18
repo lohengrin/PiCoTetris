@@ -6,18 +6,18 @@
 class Display
 {
 public:
+    enum Orientation
+    {
+        PORTRAIT,
+        LANDSCAPE
+    };
 
-
-
-    enum Orientation { PORTRAIT, LANDSCAPE };
-
-    Display(DisplayDriver *driver, Orientation orient, const Game& game);
+    Display(DisplayDriver *driver, Orientation orient, const Game &game);
 
     void draw(const Game &game);
 
 protected:
-
-    DisplayDriver::Point to(const DisplayDriver::Point& point) const;
+    DisplayDriver::Point to(const DisplayDriver::Point &point) const;
 
     void drawBlock(uint8_t c, uint8_t l);
 

@@ -22,7 +22,7 @@ using namespace pimoroni;
 
 uint8_t *frameBuffer;
 
-uint8_t db_fb[2*FRAME_WIDTH*FRAME_HEIGHT];
+uint8_t db_fb[2 * FRAME_WIDTH * FRAME_HEIGHT];
 
 struct dvi_inst DisplayDriverDvi::dvi0;
 
@@ -56,9 +56,9 @@ void vsync()
     };
 }
 
-DisplayDriverDvi::DisplayDriverDvi() : graphics(FRAME_WIDTH, FRAME_HEIGHT,db_fb+ (FRAME_WIDTH*FRAME_HEIGHT*backb)) // Draw in back buffer
+DisplayDriverDvi::DisplayDriverDvi() : graphics(FRAME_WIDTH, FRAME_HEIGHT, db_fb + (FRAME_WIDTH * FRAME_HEIGHT * backb)) // Draw in back buffer
 {
-    frameBuffer = db_fb+ (FRAME_WIDTH*FRAME_HEIGHT*frontb); // Display front buffer
+    frameBuffer = db_fb + (FRAME_WIDTH * FRAME_HEIGHT * frontb); // Display front buffer
 }
 
 DisplayDriverDvi::~DisplayDriverDvi()
@@ -134,24 +134,24 @@ void DisplayDriverDvi::update()
         backb = 1;
     }
 
-    frameBuffer = db_fb + (FRAME_WIDTH*FRAME_HEIGHT*frontb); // Display front buffer
-    graphics.set_framebuffer(db_fb + (FRAME_WIDTH*FRAME_HEIGHT*backb)); // Draw in back buffer
+    frameBuffer = db_fb + (FRAME_WIDTH * FRAME_HEIGHT * frontb);            // Display front buffer
+    graphics.set_framebuffer(db_fb + (FRAME_WIDTH * FRAME_HEIGHT * backb)); // Draw in back buffer
 }
 
-void DisplayDriverDvi::setColor(const Color& color)
+void DisplayDriverDvi::setColor(const Color &color)
 {
     graphics.set_pen(m_pens[static_cast<int>(color)]);
 }
 
-void DisplayDriverDvi::drawLine(const DisplayDriver::Point& p1, const DisplayDriver::Point& p2)
+void DisplayDriverDvi::drawLine(const DisplayDriver::Point &p1, const DisplayDriver::Point &p2)
 {
-    pimoroni::Point pp1(p1.x,p1.y);
-    pimoroni::Point pp2(p2.x,p2.y);
-    graphics.line(pp1,pp2);
+    pimoroni::Point pp1(p1.x, p1.y);
+    pimoroni::Point pp2(p2.x, p2.y);
+    graphics.line(pp1, pp2);
 }
 
-void DisplayDriverDvi::drawPixel(const DisplayDriver::Point& p)
+void DisplayDriverDvi::drawPixel(const DisplayDriver::Point &p)
 {
-    pimoroni::Point p1(p.x,p.y);
+    pimoroni::Point p1(p.x, p.y);
     graphics.pixel(p1);
 }
