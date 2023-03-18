@@ -26,8 +26,8 @@ protected:
     uint8_t m_blockSize = 4;
     uint8_t m_borderSize = 1;
     uint8_t m_offsetBorder = 7;
-    uint16_t m_width;
-    uint16_t m_height;
+    int16_t m_width;
+    int16_t m_height;
 
     const Orientation m_orient;
 };

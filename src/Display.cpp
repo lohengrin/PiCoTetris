@@ -38,9 +38,9 @@ void Display::draw(const Game &game)
 
     p_driver->setColor(Color::GREY);
 
-    uint16_t offset = (game.width()+1)*m_blockSize + m_offsetBorder;
+    int16_t offset = (game.width()+1)*m_blockSize + m_offsetBorder;
     // Draw borders
-    for (int i = 0; i < m_offsetBorder; i++)
+    for (int16_t i = 0; i < m_offsetBorder; i++)
     {
         p_driver->drawLine(to({0,i}), to({m_height, i}));
         p_driver->drawLine(to({0,i + offset}), to({m_height, i + offset}));
