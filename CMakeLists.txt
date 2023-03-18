@@ -36,6 +36,7 @@ pico_sdk_init()
 
 if (${DVI_DISPLAY})
     include(libraries/pico_graphics/pico_graphics)
+    include(drivers/button/button)
 
     set(DVI_SRC
         src/dvi/DisplayDriverDvi.h
@@ -127,6 +128,7 @@ if(${DVI_DISPLAY})
 		libdvi
         libsprite
         pico_graphics
+        button
     )
 
     target_compile_definitions(PiCoTetris PRIVATE DVI)

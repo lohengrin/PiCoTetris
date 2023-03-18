@@ -18,10 +18,6 @@
 #define VREG_VSEL VREG_VOLTAGE_1_20
 #define DVI_TIMING dvi_timing_640x480p_60hz
 
-#define SW_A 14
-#define SW_B 15
-#define SW_C 16
-
 using namespace pimoroni;
 
 uint8_t *frameBuffer;
@@ -88,16 +84,6 @@ bool DisplayDriverDvi::init()
     set_sys_clock_khz(DVI_TIMING.bit_clk_khz, true);
 
     setup_default_uart();
-
-    gpio_init(SW_A);
-    gpio_set_dir(SW_A, GPIO_IN);
-    gpio_pull_down(SW_A);
-    gpio_init(SW_B);
-    gpio_set_dir(SW_B, GPIO_IN);
-    gpio_pull_down(SW_B);
-    gpio_init(SW_C);
-    gpio_set_dir(SW_C, GPIO_IN);
-    gpio_pull_down(SW_C);
 
     dvi0.timing = &DVI_TIMING;
     dvi0.ser_cfg = DVI_DEFAULT_SERIAL_CONFIG;

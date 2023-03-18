@@ -15,6 +15,7 @@
 #ifdef DVI
 	//! DVI Driver
 	#include "dvi/DisplayDriverDvi.h"
+	#include "dvi/ControllerDvi.h"
 #endif
 
 #ifdef SSD1306
@@ -60,7 +61,7 @@ int main()
 		Display disp(disp_driver.get(), Display::PORTRAIT, game);
 #endif
 #ifdef DVI
-		std::unique_ptr<Controller> controller(new ControllerStdin);
+		std::unique_ptr<Controller> controller(new ControllerDvi);
 		std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverDvi);
 		Display disp(disp_driver.get(), Display::LANDSCAPE, game);
 #endif
