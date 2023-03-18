@@ -19,9 +19,10 @@ public:
     //! Drawing commands
     void clear() override;
     void update() override;
-    void drawLine(int x1, int y1, int x2, int y2) override;
-    void drawPixel(int x, int y) override;
 
+
+    void drawLine(const Point& p1, const Point& p2) override;
+    void drawPixel(const Point& p) override;
 protected:
     void setup_gpios();
 

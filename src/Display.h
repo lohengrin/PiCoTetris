@@ -1,19 +1,24 @@
 #pragma once
 
 #include "Game.h"
-
-class DisplayDriver;
+#include "DisplayDriver.h"
 
 class Display
 {
 public:
-    enum Orientation { LANDSCAPE, PORTRAIT };
+
+
+
+    enum Orientation { PORTRAIT, LANDSCAPE };
 
     Display(DisplayDriver *driver, Orientation orient, const Game& game);
 
     void draw(const Game &game);
 
 protected:
+
+    DisplayDriver::Point to(const DisplayDriver::Point& point) const;
+
     void drawBlock(uint8_t c, uint8_t l);
 
     DisplayDriver *p_driver;
@@ -23,4 +28,6 @@ protected:
     uint8_t m_offsetBorder = 7;
     uint16_t m_width;
     uint16_t m_height;
+
+    const Orientation m_orient;
 };

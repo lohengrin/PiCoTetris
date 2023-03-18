@@ -1,7 +1,7 @@
 #include "Display.h"
 #include "DisplayDriver.h"
 
-Display::Display(DisplayDriver *driver, Orientation orient, const Game& game) : p_driver(driver)
+Display::Display(DisplayDriver *driver, Orientation orient, const Game& game) : p_driver(driver), m_orient(orient)
 {
     p_driver->init();
 
@@ -9,7 +9,7 @@ Display::Display(DisplayDriver *driver, Orientation orient, const Game& game) : 
     m_height = p_driver->getHeight();
 
     //! Invert
-    if (orient == PORTRAIT)
+    if (m_orient == PORTRAIT)
     {
         m_width = p_driver->getHeight();
         m_height = p_driver->getWidth();
@@ -24,9 +24,11 @@ void Display::drawBlock(uint8_t c, uint8_t l)
 {
     for (int i = 0; i < m_blockSize; i++)
     {
-        int x1 = m_offsetBorder + m_borderSize + l * (m_blockSize + m_borderSize) + i;
-        int y1 = m_offsetBorder + m_borderSize + c * (m_blockSize + m_borderSize);
-        p_driver->drawLine(x1, y1, x1, y1+m_blockSize-1);
+        DisplayDriver::Point p1, p2;
+        p2.x = p1.x = m_offsetBorder + m_borderSize + l * (m_blockSize + m_borderSize) + i;
+        p1.y = m_offsetBorder + m_borderSize + c * (m_blockSize + m_borderSize);
+        p2.y = p1.y + m_blockSize-1;
+        p_driver->drawLine(to(p1), to(p2));
     }
 }
 
@@ -40,9 +42,9 @@ void Display::draw(const Game &game)
     // Draw borders
     for (int i = 0; i < m_offsetBorder; i++)
     {
-        p_driver->drawLine(0, i, m_height, i);
-        p_driver->drawLine(0, i + offset, m_height, i + offset);
-        p_driver->drawLine(i, 0, i, offset);
+        p_driver->drawLine(to({0,i}), to({m_height, i}));
+        p_driver->drawLine(to({0,i + offset}), to({m_height, i + offset}));
+        p_driver->drawLine(to({i, 0}), to({i, offset}));
     }
 
     // Draw Board
@@ -70,4 +72,17 @@ void Display::draw(const Game &game)
 
 
     p_driver->update();
+}
+
+
+DisplayDriver::Point Display::to(const DisplayDriver::Point& point) const
+{
+    switch (m_orient)
+    {
+        case LANDSCAPE:
+            return {point.y, m_height-point.x};
+        default:
+        case PORTRAIT:
+            return point;
+    };
 }

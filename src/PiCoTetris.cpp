@@ -52,17 +52,19 @@ int main()
 
 		std::unique_ptr<Controller> controller(new ControllerPimoroni);
 		std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverPimoroni);
+		Display disp(disp_driver.get(), Display::PORTRAIT, game);
 #endif
 #ifdef SSD1306
 		std::unique_ptr<Controller> controller(new ControllerStdin);
 		std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverSSD1306);
+		Display disp(disp_driver.get(), Display::PORTRAIT, game);
 #endif
 #ifdef DVI
 		std::unique_ptr<Controller> controller(new ControllerStdin);
 		std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverDvi);
+		Display disp(disp_driver.get(), Display::LANDSCAPE, game);
 #endif
 
-		Display disp(disp_driver.get(), Display::PORTRAIT, game);
 
 		//! Scheduling
 		absolute_time_t nextStep = delayed_by_us(get_absolute_time(), PERIOD_US);
