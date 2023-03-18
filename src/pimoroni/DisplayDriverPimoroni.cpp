@@ -51,20 +51,20 @@ void DisplayDriverPimoroni::update()
     st7789.update(&graphics);
 }
 
-void DisplayDriverPimoroni::setColor(Color color)
+void DisplayDriverPimoroni::setColor(const Color& color)
 {
     graphics.set_pen(m_pens[static_cast<int>(color)]);
 }
 
-void DisplayDriverPimoroni::drawLine(int x1, int y1, int x2, int y2)
+void DisplayDriverPimoroni::drawLine(const DisplayDriver::Point& p1, const DisplayDriver::Point& p2)
 {
-    Point p1(x1,y1);
-    Point p2(x2,y2);
-    graphics.line(p1,p2);
+    pimoroni::Point pp1(p1.x,p1.y);
+    pimoroni::Point pp2(p2.x,p2.y);
+    graphics.line(pp1,pp2);
 }
 
-void DisplayDriverPimoroni::drawPixel(int x, int y)
+void DisplayDriverPimoroni::drawPixel(const DisplayDriver::Point& p)
 {
-    Point p1(x,y);
+    pimoroni::Point p1(p.x,p.y);
     graphics.pixel(p1);
 }

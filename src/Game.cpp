@@ -66,6 +66,11 @@ void Game::setCommand(Controller::Command cmd)
                 m_currentPiece=tmp;
         }
         break;
+        case Controller::NONE:
+        case Controller::UNPAUSE:
+        case Controller::RESET:
+        default:
+            break;
     };
 }
 
@@ -73,7 +78,7 @@ void Game::setCommand(Controller::Command cmd)
 Game::GameStatus Game::step()
 {
     static uint64_t count = 1;
-    const int speed = 100;
+    const int speed = 10;
     
     if (count++ % speed == 0)
     {
@@ -124,11 +129,11 @@ uint8_t Game::checkContact()
                 int x = pos.x+c;
                 int y = pos.y+l;
 
-                if ((x == 0) || (board(y,x-1).type == Block::FILL)) 
+                if ((x == 0) || (board(y,x-1).fill)) 
                     ret = ret | DirLeft;
-                if ((x == m_width-1) || (board(y,x+1).type == Block::FILL)) 
+                if ((x == m_width-1) || (board(y,x+1).fill)) 
                     ret = ret | DirRight;
-                if ((y == 0) || (board(y-1,x).type == Block::FILL))
+                if ((y == 0) || (board(y-1,x).fill))
                     ret = ret | DirBottom;
             }
         }
@@ -151,7 +156,7 @@ bool Game::nextPiece()
                 auto x = pos.x+c;
                 auto y = pos.y+l;
                 Block& b = board(y,x);
-                b.type = Block::FILL;
+                b.fill = true;
                 b.color = m_currentPiece.getColor();
             }
         }
@@ -178,7 +183,7 @@ bool Game::checkCollision()
                 int x = pos.x+c;
                 int y = pos.y+l;
 
-                if ((x < 0) || (x == m_width-1) || (board(y,x).type == Block::FILL)) 
+                if ((x < 0) || (x == m_width-1) || (board(y,x).fill)) 
                     return true;
             }
         }
@@ -196,9 +201,9 @@ uint16_t Game::checkLines()
     for (int l = 0; l < m_height; l++)
     {
         int count = 0;
-        for (size_t c = 0; c < m_width; c++)
+        for (int c = 0; c < m_width; c++)
         {
-            if (board(l,c).type == Game::Block::FILL)
+            if (board(l,c).fill)
                 count++;
         }
 
@@ -213,14 +218,14 @@ uint16_t Game::checkLines()
     for (auto i: to_remove)
     {
         // shift lines above the full line
-        for (size_t l2 = i-lineoffset; l2 < m_height-1; l2++)
-            for (size_t c = 0; c < m_width; c++)
+        for (int l2 = i-lineoffset; l2 < m_height-1; l2++)
+            for (int c = 0; c < m_width; c++)
                 board(l2,c) = board(l2+1,c);
 
         // fill last line with empty line
         int lastLine = m_height-1;
-        for (size_t c = 0; c < m_width; c++)
-            board(lastLine,c).type = Game::Block::NONE;
+        for (int c = 0; c < m_width; c++)
+            board(lastLine,c).fill = false;
 
         lineoffset++;
         score += 10;

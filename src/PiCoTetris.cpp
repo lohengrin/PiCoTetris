@@ -7,9 +7,15 @@
 #include "Game.h"
 #include "Display.h"
 #include "Controller.h"
+#include "pico/stdlib.h"
 
 //! STDIN Controller
 #include "ControllerStdin.h"
+
+#ifdef DVI
+	//! DVI Driver
+	#include "dvi/DisplayDriverDvi.h"
+#endif
 
 #ifdef SSD1306
 	//! SSD1306 Driver
@@ -23,30 +29,17 @@
 	#include "rgbled.hpp"
 #endif
 
-#ifdef RASPBERRYPI_PICO_W
-#include "pico/cyw43_arch.h"
-#endif
-
 // PICO SDK
 #include "pico/stdlib.h"
 
 #include <memory>
 #include <stdio.h>
 
-#define PERIOD_US 10000 // 100 Hz
+#define PERIOD_US 100000 // 10 Hz
 
 int main()
 {
 	stdio_init_all();
-
-#ifdef RASPBERRYPI_PICO_W
-	// Init Wifi if using PICO_W (not used yet)
-	if (cyw43_arch_init())
-	{
-		printf("WiFi init failed");
-		return -1;
-	}
-#endif
 
 	while (true)
 	{
@@ -59,13 +52,19 @@ int main()
 
 		std::unique_ptr<Controller> controller(new ControllerPimoroni);
 		std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverPimoroni);
+		Display disp(disp_driver.get(), Display::PORTRAIT, game);
 #endif
 #ifdef SSD1306
 		std::unique_ptr<Controller> controller(new ControllerStdin);
 		std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverSSD1306);
+		Display disp(disp_driver.get(), Display::PORTRAIT, game);
+#endif
+#ifdef DVI
+		std::unique_ptr<Controller> controller(new ControllerStdin);
+		std::unique_ptr<DisplayDriver> disp_driver(new DisplayDriverDvi);
+		Display disp(disp_driver.get(), Display::LANDSCAPE, game);
 #endif
 
-		Display disp(disp_driver.get(), Display::PORTRAIT, game);
 
 		//! Scheduling
 		absolute_time_t nextStep = delayed_by_us(get_absolute_time(), PERIOD_US);

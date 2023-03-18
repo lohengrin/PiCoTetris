@@ -2,15 +2,15 @@
 
 #include "DisplayDriver.h"
 
-#include "pico_display.hpp"
-#include "drivers/st7789/st7789.hpp"
+#include "dvi.h"
 #include "libraries/pico_graphics/pico_graphics.hpp"
 
 //! Abstract interface of display driver
-class DisplayDriverPimoroni : public DisplayDriver
+class DisplayDriverDvi : public DisplayDriver
 {
 public:
-    DisplayDriverPimoroni();
+    DisplayDriverDvi();
+    ~DisplayDriverDvi();
 
     //! Initialize display
     bool init() override;
@@ -27,10 +27,12 @@ public:
     void drawLine(const Point& p1, const Point& p2) override;
     void drawPixel(const Point& p) override;
 
-protected:
-    pimoroni::ST7789 st7789;
-    pimoroni::PicoGraphics_PenRGB565 graphics;
+    static struct dvi_inst dvi0;
 
+protected:
+    int frontb = 0;
+    int backb = 1;
+    pimoroni::PicoGraphics_PenRGB332 graphics;
     pimoroni::Pen BG; // Background pen
     std::vector<pimoroni::Pen> m_pens; // Colors pens
 };

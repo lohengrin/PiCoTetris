@@ -35,14 +35,14 @@ void DisplayDriverSSD1306::update()
     m_display.show();
 }
 
-void DisplayDriverSSD1306::drawLine(int x1, int y1, int x2, int y2)
+void DisplayDriverSSD1306::drawLine(const DisplayDriver::Point& p1, const DisplayDriver::Point& p2)
 {
-    m_display.draw_line(x1, y1, x2, y2);
+    m_display.draw_line(p1.x, p1.y, p2.x, p2.y);
 }
 
-void DisplayDriverSSD1306::drawPixel(int x, int y)
+void DisplayDriverSSD1306::drawPixel(const DisplayDriver::Point& p)
 {
-    m_display.draw_pixel(x, y);
+    m_display.draw_pixel(p.x, p.y);
 }
 
 void DisplayDriverSSD1306::setup_gpios()
