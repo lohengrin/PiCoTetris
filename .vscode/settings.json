@@ -1,25 +1,39 @@
 {
     "files.associations": {
         "array": "cpp",
-        "atomic": "cpp",
-        "bit": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "ranges": "cpp",
+        "utility": "cpp",
+        "random": "cpp",
+        "deque": "cpp",
         "*.tcc": "cpp",
-        "cctype": "cpp",
-        "clocale": "cpp",
         "cmath": "cpp",
         "compare": "cpp",
         "concepts": "cpp",
-        "cstdarg": "cpp",
-        "cstddef": "cpp",
-        "cstdint": "cpp",
         "cstdio": "cpp",
         "cstdlib": "cpp",
-        "cwchar": "cpp",
-        "cwctype": "cpp",
-        "deque": "cpp",
-        "unordered_map": "cpp",
         "vector": "cpp",
         "exception": "cpp",
+        "limits": "cpp",
+        "new": "cpp",
+        "cstdint": "cpp",
+        "type_traits": "cpp",
+        "typeinfo": "cpp",
+        "atomic": "cpp",
+        "bit": "cpp",
+        "cctype": "cpp",
+        "chrono": "cpp",
+        "cinttypes": "cpp",
+        "clocale": "cpp",
+        "cstdarg": "cpp",
+        "cstddef": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "cwchar": "cpp",
+        "cwctype": "cpp",
+        "map": "cpp",
+        "unordered_map": "cpp",
         "algorithm": "cpp",
         "functional": "cpp",
         "iterator": "cpp",
@@ -27,22 +41,44 @@
         "memory_resource": "cpp",
         "numeric": "cpp",
         "optional": "cpp",
-        "random": "cpp",
+        "ratio": "cpp",
         "string": "cpp",
-        "string_view": "cpp",
         "system_error": "cpp",
         "tuple": "cpp",
-        "type_traits": "cpp",
-        "utility": "cpp",
-        "initializer_list": "cpp",
+        "iomanip": "cpp",
         "iosfwd": "cpp",
-        "limits": "cpp",
-        "new": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp",
         "ostream": "cpp",
-        "ranges": "cpp",
+        "sstream": "cpp",
         "stdexcept": "cpp",
         "streambuf": "cpp",
-        "cinttypes": "cpp",
-        "typeinfo": "cpp"
-    }
+        "string.h": "c",
+        "uni_hid_device_vendors.h": "c",
+        "uni_platform.h": "c",
+        "uni_config.h": "c",
+        "uni_platform_pico.h": "c"
+    },
+    // These settings tweaks to the cmake plugin will ensure
+    // that you debug using cortex-debug instead of trying to launch
+    // a Pico binary on the host
+    "cmake.statusbar.advanced": {
+        "debug": {
+            "visibility": "hidden"
+        },
+        "launch": {
+            "visibility": "hidden"
+        },
+        "build": {
+            "visibility": "default"
+        },
+        "buildTarget": {
+            "visibility": "hidden"
+        }
+    },
+    "cmake.buildBeforeRun": true,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cortex-debug.openocdPath": "/usr/local/bin/openocd",
+    "cortex-debug.objdumpPath": "/usr/bin/arm-none-eabi-objdump",
+    "cortex-debug.gdbPath": "gdb-multiarch"
 }

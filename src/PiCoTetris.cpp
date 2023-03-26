@@ -33,17 +33,19 @@
 // PICO SDK
 #include "pico/stdlib.h"
 
-#ifdef RASPBERRYPI_PICO_W
-#include "pico/cyw43_arch.h"
-#include "picow_bt.h"
-#include "btstack.h"
+#ifdef CONTROL_BT
+	#include "pico/cyw43_arch.h"
+	#include "ControllerBluepad32.h"
+	#include "btstack.h"
+	#include "uni_main.h"
+
+	static btstack_timer_source_t work_timer;
 #endif
 
 #include <memory>
 #include <stdio.h>
 
 #define PERIOD_US 100000 // 10 Hz
-static btstack_timer_source_t work_timer;
 
 struct GameContext
 {
@@ -65,10 +67,9 @@ struct GameContext
 	Game::GameStatus m_status;
 };
 
-static void work_timer_handler(btstack_timer_source_t *ts)
+//----------------------------------------------------------
+void gameStep(GameContext *gc)
 {
-	GameContext *gc = reinterpret_cast<GameContext *>(ts->context);
-
 	// Get joystick event
 	Controller::Command cmd = gc->m_controller->step();
 
@@ -92,61 +93,81 @@ static void work_timer_handler(btstack_timer_source_t *ts)
 		}
 		sleep_ms(100);
 	}
-	// set timer for next tick
-//	btstack_run_loop_set_timer_context(&work_timer, gc);
-//	btstack_run_loop_set_timer_handler(&work_timer, work_timer_handler);
-//	btstack_run_loop_set_timer(&work_timer, 10);
-//	btstack_run_loop_add_timer(&work_timer);
 }
+
+#ifdef CONTROL_BT
+static void work_timer_handler(btstack_timer_source_t *ts)
+{
+	GameContext *gc = reinterpret_cast<GameContext *>(ts->context);
+
+	gameStep(gc);
+
+	// set timer for next tick
+	btstack_run_loop_set_timer(&work_timer, 100);
+	btstack_run_loop_add_timer(&work_timer);
+}
+#endif
 
 int main()
 {
 	stdio_init_all();
 
+	// Selected controller
+	Controller * ctrl = nullptr;
+	DisplayDriver * dispDrv = nullptr;
+	Display::Orientation orientation = Display::PORTRAIT;
+
+#ifdef CONTROL_BT
+    // initialize CYW43 driver architecture (will enable BT if/because CYW43_ENABLE_BLUETOOTH == 1)
+    if (cyw43_arch_init()) {
+        printf("failed to initialise cyw43_arch\n");
+        return -1;
+    }
+
+	ctrl = new ControllerBluepad32;
+#elif defined(PIMORONI)
+	ctrl = new ControllerPimoroni;
+#else
+	ctrl = new ControllerStdin;
+#endif
+
 // Display selection at compilation time
 #ifdef PIMORONI
+	dispDrv = new DisplayDriverPimoroni();
+
 	// pimoroni::RGBLED led(pimoroni::PicoDisplay::LED_R, pimoroni::PicoDisplay::LED_G, pimoroni::PicoDisplay::LED_B);
 	// led.set_rgb(0, 50, 0);
-
-	GameContext gameCtx(
-		new ControllerPimoroni(),
-		new DisplayDriverPimoroni(),
-		Display::PORTRAIT,
-		10, 22);
-#endif
-#ifdef SSD1306
-	GameContext gameCtx(
-		new ControllerStdin(),
-		new DisplayDriverSSD1306(),
-		Display::PORTRAIT,
-		10, 22);
-#endif
-#ifdef DVI
-	GameContext gameCtx(
-		new ControllerDvi(),
-		new DisplayDriverDvi(),
-		Display::LANDSCAPE,
-		10, 22);
+#elif defined(SSD1306)
+	dispDrv = new DisplayDriverSSD1306();
+#elif  defined(DVI)
+	dispDrv = new DisplayDriverDvi();
+	orientation = Display::LANDSCAPE;
 #endif
 
+	if (!ctrl || !dispDrv)
+	{
+		printf("Invalid configuration.\n");
+		exit(1);
+	}
+
+	GameContext gameCtx(ctrl, dispDrv, orientation, 10, 22);
+
+
+#ifdef CONTROL_BT
 	// set timer for workload
 	btstack_run_loop_set_timer_context(&work_timer, &gameCtx);
 	btstack_run_loop_set_timer_handler(&work_timer, work_timer_handler);
-	btstack_run_loop_set_timer(&work_timer, 10);
+	btstack_run_loop_set_timer(&work_timer, 100);
 	btstack_run_loop_add_timer(&work_timer);
 
-	picow_bt_main();
-	btstack_run_loop_execute();
-/*
-	btstack_timer_source_t ts;
-	ts.context = &gameCtx;
-
+	uni_main(0, NULL);
+#else
 	while(true)
 	{
-		work_timer_handler(&ts);
+		gameStep(&gameCtx);
 		sleep_ms(10);
 	}
-*/
+#endif
 
 	return 0;
 }

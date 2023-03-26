@@ -12,6 +12,10 @@ option(DISPLAY_PIMORONI "Support for Pimoroni display pack (1,14\")" OFF)
 option(DISPLAY_SSD1306 "Support for ssd1306 display" OFF)
 option(DISPLAY_DIV "Support for DVI display" OFF)
 
+IF (${PICO_BOARD} STREQUAL "pico_w")
+    option(CONTROL_BT "Support for Bluetooth Gamepad" OFF)
+ENDIF()
+
 IF(NOT(${DISPLAY_PIMORONI} OR ${DISPLAY_SSD1306} OR ${DISPLAY_DIV}))
     message( FATAL_ERROR "No Display selected, please use DISPLAY_PIMORONI, DISPLAY_SSD1306 or DISPLAY_DIV." )
 ENDIF()
@@ -33,14 +37,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 # initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
-
-IF (${PICO_BOARD} STREQUAL "pico_w")
-    set(BT_SRC
-    src/bt/picow_bt.c
-    src/bt/picow_bt.h
-    src/bt/hid_host.c
-    )
-ENDIF()
 
 if (${DISPLAY_DIV})
     include(libraries/pico_graphics/pico_graphics)
@@ -88,8 +84,28 @@ if(${DISPLAY_DIV})
     add_subdirectory(libsprite)
 endif()
 
+if(${CONTROL_BT})
+    add_subdirectory(bluepad32)
 
-# rest of your project
+    set(BT_SRC
+        src/bt/Bluepad32.h
+        src/bt/ControllerBluepad32.h
+        src/bt/ControllerBluepad32.cpp
+        src/bt/PicoBluepad32.cpp
+        src/bt/PicoBluepad32.h
+        src/bt/PicoConsole.cpp
+        src/bt/PicoConsole.h
+        src/bt/PicoController.cpp
+        src/bt/PicoControllerData.h
+        src/bt/PicoController.h
+        src/bt/PicoControllerProperties.h
+        src/bt/PicoGamepad.cpp
+        src/bt/PicoGamepad.h
+        src/bt/PicoGamepadProperties.h
+    )
+endif()
+
+
 add_executable(PiCoTetris
 src/PiCoTetris.cpp
 src/Game.cpp
@@ -172,14 +188,16 @@ if (${DISPLAY_SSD1306})
     target_compile_definitions(PiCoTetris PRIVATE SSD1306)
 endif()
 
-IF (${PICO_BOARD} STREQUAL "pico_w")
-target_include_directories(PiCoTetris PRIVATE src/bt)
-target_link_libraries(PiCoTetris 
-    pico_cyw43_arch_none
-    pico_btstack_ble
-    pico_btstack_classic
-    pico_btstack_cyw43
-)
+IF (${CONTROL_BT})
+    target_include_directories(PiCoTetris PRIVATE src/bt)
+    target_link_libraries(PiCoTetris 
+        pico_cyw43_arch_none
+        pico_btstack_ble
+        pico_btstack_classic
+        pico_btstack_cyw43
+        bluepad32
+    )
+    target_compile_definitions(PiCoTetris PRIVATE CONTROL_BT)
 ENDIF()
 
 pico_enable_stdio_usb(PiCoTetris 1)
