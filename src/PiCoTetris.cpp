@@ -18,7 +18,7 @@
 #include "dvi/ControllerDvi.h"
 #endif
 
-#ifdef SSD1306
+#ifdef DISP_SSD1306
 //! SSD1306 Driver
 #include "ssd1306/DisplayDriverSSD1306.h"
 #endif
@@ -70,9 +70,12 @@ struct GameContext
 //----------------------------------------------------------
 void gameStep(GameContext *gc)
 {
+	static bool connected = false;
+
 	// Get joystick event
 	Controller::Command cmd = gc->m_controller->step();
-
+	if (connected && cmd != Controller::NOT_CONECTED)
+		gc->m_disp.init();
 
 	if (gc->m_status == Game::GameStatus::RUNNING)
 	{
@@ -137,7 +140,7 @@ int main()
 
 	// pimoroni::RGBLED led(pimoroni::PicoDisplay::LED_R, pimoroni::PicoDisplay::LED_G, pimoroni::PicoDisplay::LED_B);
 	// led.set_rgb(0, 50, 0);
-#elif defined(SSD1306)
+#elif defined(DISP_SSD1306)
 	dispDrv = new DisplayDriverSSD1306();
 #elif  defined(DVI)
 	dispDrv = new DisplayDriverDvi();
@@ -147,7 +150,7 @@ int main()
 	if (!ctrl || !dispDrv)
 	{
 		printf("Invalid configuration.\n");
-		exit(1);
+		return(1);
 	}
 
 	GameContext gameCtx(ctrl, dispDrv, orientation, 10, 22);

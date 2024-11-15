@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <stdio.h>
 #include <string.h>
+#include <iterator>
 
 uint32_t rnd(void)
 {

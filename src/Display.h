@@ -14,6 +14,8 @@ public:
 
     Display(DisplayDriver *driver, Orientation orient, const Game &game);
 
+    void init();
+
     void draw(const Game &game);
 
 protected:
@@ -30,4 +32,6 @@ protected:
     int16_t m_height;
 
     const Orientation m_orient;
+
+    bool initialized = false;
 };

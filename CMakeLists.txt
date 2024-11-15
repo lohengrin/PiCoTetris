@@ -10,14 +10,14 @@ SET(DVI_DEFAULT_SERIAL_CONFIG pimoroni_demo_hdmi_cfg)
 
 option(DISPLAY_PIMORONI "Support for Pimoroni display pack (1,14\")" OFF)
 option(DISPLAY_SSD1306 "Support for ssd1306 display" OFF)
-option(DISPLAY_DIV "Support for DVI display" OFF)
+option(DISPLAY_DVI "Support for DVI display" OFF)
 
 IF (${PICO_BOARD} STREQUAL "pico_w")
     option(CONTROL_BT "Support for Bluetooth Gamepad" OFF)
 ENDIF()
 
-IF(NOT(${DISPLAY_PIMORONI} OR ${DISPLAY_SSD1306} OR ${DISPLAY_DIV}))
-    message( FATAL_ERROR "No Display selected, please use DISPLAY_PIMORONI, DISPLAY_SSD1306 or DISPLAY_DIV." )
+IF(NOT(${DISPLAY_PIMORONI} OR ${DISPLAY_SSD1306} OR ${DISPLAY_DVI}))
+	message( FATAL_ERROR "No Display selected, please use DISPLAY_PIMORONI, DISPLAY_SSD1306 or DISPLAY_DVI." )
 ENDIF()
 
 
@@ -26,7 +26,7 @@ ENDIF()
 include(pico_sdk_import.cmake)
 
 # Optionnal PIMORONI SDK for display
-if(${DISPLAY_PIMORONI} OR ${DISPLAY_DIV})
+if(${DISPLAY_PIMORONI} OR ${DISPLAY_DVI})
     include(pimoroni_pico_import.cmake)
 endif()
 
@@ -38,7 +38,7 @@ set(CMAKE_CXX_STANDARD 17)
 # initialize the Raspberry Pi Pico SDK
 pico_sdk_init()
 
-if (${DISPLAY_DIV})
+if (${DISPLAY_DVI})
     include(libraries/pico_graphics/pico_graphics)
     include(drivers/button/button)
 
@@ -79,7 +79,7 @@ if (${DISPLAY_SSD1306})
 endif()
 
 
-if(${DISPLAY_DIV})
+if(${DISPLAY_DVI})
     add_subdirectory(libdvi)
     add_subdirectory(libsprite)
 endif()
@@ -127,7 +127,7 @@ ${DVI_SRC}
 ${BT_SRC}
 )
 
-if(${DISPLAY_DIV})
+if(${DISPLAY_DVI})
     target_compile_options(PiCoTetris PRIVATE -Wall -Wno-narrowing)
     target_compile_definitions(PiCoTetris PRIVATE
     DVI_DEFAULT_SERIAL_CONFIG=${DVI_DEFAULT_SERIAL_CONFIG}
@@ -185,7 +185,7 @@ if (${DISPLAY_SSD1306})
     target_link_libraries(PiCoTetris 
         hardware_i2c
     )
-    target_compile_definitions(PiCoTetris PRIVATE SSD1306)
+    target_compile_definitions(PiCoTetris PRIVATE DISP_SSD1306)
 endif()
 
 IF (${CONTROL_BT})

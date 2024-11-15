@@ -3,8 +3,6 @@
 
 Display::Display(DisplayDriver *driver, Orientation orient, const Game &game) : p_driver(driver), m_orient(orient)
 {
-    p_driver->init();
-
     m_width = p_driver->getWidth();
     m_height = p_driver->getHeight();
 
@@ -18,6 +16,11 @@ Display::Display(DisplayDriver *driver, Orientation orient, const Game &game) : 
     m_blockSize = std::min(m_width / (game.width() + 2), m_height / (game.height() + 2));
     m_borderSize = 1;
     m_offsetBorder = m_blockSize;
+}
+
+void Display::init()
+{
+    initialized = p_driver->init();
 }
 
 void Display::drawBlock(uint8_t c, uint8_t l)
@@ -34,6 +37,9 @@ void Display::drawBlock(uint8_t c, uint8_t l)
 
 void Display::draw(const Game &game)
 {
+    if (!initialized)
+        return;
+        
     p_driver->clear();
 
     p_driver->setColor(Color::GREY);

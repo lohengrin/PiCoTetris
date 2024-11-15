@@ -14,6 +14,10 @@ Controller::Command ControllerBluepad32::step()
 {
     Bluepad32::BP32.update();
 
+    bool connected = false;
+
+    Controller::Command cmd = Controller::NOT_CONECTED;
+
     // It is safe to always do this before using the gamepad API.
     // This guarantees that the gamepad is valid and connected.
     for (int i = 0; i < BP32_MAX_GAMEPADS; i++)
@@ -42,6 +46,8 @@ Controller::Command ControllerBluepad32::step()
 
             // You can query the axis and other properties as well. See Gamepad.h
             // For all the available functions.
+
+            cmd = Controller::NONE;
         }
     }
 #if 0
@@ -65,7 +71,7 @@ Controller::Command ControllerBluepad32::step()
         return Controller::NONE;
     }
 #endif
-    return Controller::NONE;
+    return cmd;
 }
 
 // This callback gets called any time a new gamepad is connected.

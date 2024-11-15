@@ -20,7 +20,7 @@ public:
     void clear() override;
     void update() override;
 
-
+    void setColor(const Color &color) override {}
     void drawLine(const Point& p1, const Point& p2) override;
     void drawPixel(const Point& p) override;
 protected:

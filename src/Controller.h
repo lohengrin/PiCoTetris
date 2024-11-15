@@ -3,6 +3,7 @@
 class Controller {
 public:
         enum Command {
+            NOT_CONECTED = -1,
             NONE = 0,
             LEFT,
             RIGHT,
